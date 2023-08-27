@@ -4,7 +4,7 @@ import pool from './users_db.js';
 const app = express();
 const port = 3031;
 
-app.set('view engine', 'pug'); 
+app.set('view engine', 'pug'); //
 
 app.get('/api/customers', async (req, res) => {
     try {
