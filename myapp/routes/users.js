@@ -42,6 +42,8 @@ router.post('/user', function (req, res, next) {
 });
 
 
+let loggedInUserId = ''
+
 
 router.post('/login', function (req, res, next) {
   const { email, password } = req.body;
@@ -60,7 +62,7 @@ router.post('/login', function (req, res, next) {
      
       if (password === user.password) {
         
-         
+        loggedInUserId = user.id;
         res.json({ success: true });
       } else {
      
@@ -75,8 +77,8 @@ router.post('/login', function (req, res, next) {
 
 // Endpoint to set a cookie
 router.get('/set-cookie', function(req, res, next) {
-  const id = { id: 1};
-    res.cookie("userID", "1", {
+ 
+    res.cookie("userID", loggedInUserId, {
       domain: 'localhost'
     });
   
