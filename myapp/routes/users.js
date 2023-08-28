@@ -3,6 +3,7 @@ var router = express.Router();
 var mysql = require('mysql2'); 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 
 router.use(cookieParser());
@@ -26,17 +27,20 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/user', function(req, res, next) {
-  connection.query('SELECT * FROM users WHERE id = 1', (err, results) => {
+
+router.post('/user', function (req, res, next) {
+  const { id } = req.body;
+ 
+  connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');
       return;
     }
-
     res.json(results);
   });
 });
+
 
 
 router.post('/login', function (req, res, next) {
@@ -71,15 +75,23 @@ router.post('/login', function (req, res, next) {
 
 // Endpoint to set a cookie
 router.get('/set-cookie', function(req, res, next) {
-  const userData = { id: 1};
-    res.cookie('myCookie', JSON.stringify({ id: 1}), {
+  const id = { id: 1};
+    res.cookie("userID", "1", {
       domain: 'localhost'
     });
-  // Send a response
+  
     res.send('Cookie set!');
 }); 
   
+router.get('/get-cookie', (req, res) => {
+  console.log(req.cookies)
+  res.send(req.cookies)
+});
 
+router.get('/del-cookie',(req,res) => {
+  res.clearCookie('userID')
+  res.send('cookie was deleted')
+})
 
 // router.get('/private-area', auth, (req, res) => {
 
