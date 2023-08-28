@@ -13,6 +13,7 @@ var category_imagesRouter = require('./routes/category_images');
 var user_cartRouter = require('./routes/user_cart');
 var insert_userRouter = require('./routes/insert_user');
 var hero_section_imagesRouter = require('./routes/hero_section_images')
+//var order_historyRouter = require('./routes/order_history');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use('/category_images', category_imagesRouter);
 app.use('/items', itemsRouter);
 app.use('/hero_section_images', hero_section_imagesRouter);
 app.use('/insert_user', insert_userRouter);
+//app.use('/order_history', order_historyRouter);
 
 
 // catch 404 and forward to error handler
