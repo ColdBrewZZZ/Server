@@ -18,8 +18,8 @@ router.post('/', function(req, res, next) {
       var mailOptions = {
         from: 'z.g.bradford@gmail.com',
         to: [email],
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        subject: 'Link for ALORS account password reset',
+        html: '<h1>Click link to reset your password</h1><a href="http://localhost:3001/PasswordReset">Reset Password Here</a>'
       };
     
       transporter.sendMail(mailOptions, function(error, info){
