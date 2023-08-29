@@ -13,6 +13,7 @@ var category_imagesRouter = require('./routes/category_images');
 var user_cartRouter = require('./routes/user_cart');
 var insert_userRouter = require('./routes/insert_user');
 var hero_section_imagesRouter = require('./routes/hero_section_images')
+var send_emailRouter = require('./routes/send_email');
 //var order_historyRouter = require('./routes/order_history');
 
 var app = express();
@@ -36,6 +37,7 @@ app.use('/category_images', category_imagesRouter);
 app.use('/items', itemsRouter);
 app.use('/hero_section_images', hero_section_imagesRouter);
 app.use('/insert_user', insert_userRouter);
+app.use('/send_email', send_emailRouter);
 //app.use('/order_history', order_historyRouter);
 
 
