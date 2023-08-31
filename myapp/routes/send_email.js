@@ -26,7 +26,8 @@ router.post('/', function(req, res, next) {
     // future: put log out 
     
     
-    const resetLink = `http://localhost:3001/PasswordReset`
+    const resetLink = `http://localhost:3001/PasswordReset?token=${accessToken}`
+
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -50,6 +51,7 @@ router.post('/', function(req, res, next) {
         }
       });
 
+      res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
       res.json({ accessToken });
 
 
