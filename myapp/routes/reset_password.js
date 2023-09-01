@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const jwt = require('jsonwebtoken');
 var mysql = require('mysql2');
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -25,28 +26,34 @@ router.get('/', function(req, res, next) {
 });
 
 
+
 router.post('/', function (req, res, next) {
-  
-  const { password, email } = req.body;
+  const { password, token } = req.body;
 
-  
-  const insertQuery = `UPDATE users SET password=? WHERE email=?`;
+  try {
+   
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const email = decodedToken.email;
 
-  
-  connection.query(
-    insertQuery,
-    [password, email],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
-        return;
+    const insertQuery = `UPDATE users SET password=? WHERE email=?`;
+
+    connection.query(
+      insertQuery,
+      [password, email],
+      (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('Internal Server Error');
+          return;
+        }
+
+        res.status(201).json({ message: 'User password changed successfully', insertedId: result.insertId });
       }
-
-     
-      res.status(201).json({ message: 'User created successfully', insertedId: result.insertId });
-    }
-  );
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(401).send('Invalid token'); 
+  }
 });
 
 module.exports = router;
