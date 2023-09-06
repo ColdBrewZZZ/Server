@@ -2,11 +2,12 @@ var express = require('express');
 var router = express.Router();
 const jwt = require('jsonwebtoken');
 var mysql = require('mysql2');
+require('dotenv').config();
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Sqldoawk1!',
-  database: 'alors',
+  host: process.env.DB_HOST, 
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 });
 
 
