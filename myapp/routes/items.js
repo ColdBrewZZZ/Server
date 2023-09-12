@@ -1,55 +1,42 @@
 var express = require('express');
 var router = express.Router();
-var fs = require('fs');
-var path = require('path');
+var mysql = require('mysql2'); 
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const cookieParser = require('cookie-parser');
+
+router.use(cookieParser());
+
+require('dotenv').config();
+var connection = mysql.createConnection({
+  host: process.env.DB_HOST, 
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
+});
 
 router.get('/', function(req, res, next) {
-  var filePath = path.join(__dirname, '../items_data.txt');
-
-  fs.readFile(filePath, 'utf8', (err, data) => {
+  connection.query('SELECT * FROM items', (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');
       return;
     }
 
-    var itemsData = JSON.parse(data);
-    res.json(itemsData);
+    res.json(results);
   });
 });
 
-router.get('/:categoryName', function(req, res, next) {
-  var categoryName = req.params.categoryName; 
-  var categoriesFilePath = path.join(__dirname, '../categories.txt');
-  var itemsFilePath = path.join(__dirname, '../items_data.txt');
-
-  fs.readFile(categoriesFilePath, 'utf8', (err, categoriesData) => {
+router.get('/new-items', function(req, res, next) {
+  connection.query('SELECT * FROM items WHERE date_added > DATE_SUB(NOW(), INTERVAL 1 MONTH);', (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');
       return;
     }
 
-    fs.readFile(itemsFilePath, 'utf8', (err, itemsData) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
-        return;
-      }
-
-      var categories = JSON.parse(categoriesData);
-      var items = JSON.parse(itemsData);
-
-      var category = categories.find(cat => cat.name === categoryName);
-      if (!category) {
-        res.status(404).send('Category not found');
-        return;
-      }
-
-      var categoryId = category.id;
-      var categoryItems = items.filter(item => item.category_id === categoryId);
-      res.json(categoryItems);
-    });
+    res.json(results);
   });
 });
 
