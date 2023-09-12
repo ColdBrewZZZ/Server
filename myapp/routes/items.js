@@ -40,4 +40,32 @@ router.get('/new-items', function(req, res, next) {
   });
 });
 
+router.get('/:id', function(req, res, next) {
+  const itemId = req.params.id;
+
+
+  if (!Number.isInteger(+itemId) || +itemId <= 0) {
+    res.status(400).send('Invalid item ID');
+    return;
+  }
+
+  const query = 'SELECT * FROM items WHERE id = ?';
+  connection.query(query, [itemId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+
+    if (results.length === 0) {
+      res.status(404).send('Item not found');
+      return;
+    }
+
+    res.json(results[0]);
+  });
+});
+
+
 module.exports = router;
