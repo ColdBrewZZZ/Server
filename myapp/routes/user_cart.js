@@ -26,6 +26,33 @@ router.get('/', function(req, res, next) {
 });
 
 
+router.get('/:id', function(req, res, next) {
+  const userId = req.params.id;
+
+
+  if (!Number.isInteger(+userId) || +userId <= 0) {
+    res.status(400).send('Invalid user ID');
+    return;
+  }
+
+  const query = 'SELECT * FROM user_cart WHERE user_id = ?';
+  connection.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+
+    if (results.length === 0) {
+      res.status(404).send('Item not found');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
 router.post('/', function (req, res, next) {
   
   const { user_id, item_id, quantity} = req.body;
