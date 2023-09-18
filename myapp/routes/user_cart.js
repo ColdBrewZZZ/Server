@@ -53,6 +53,7 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+// insert item into user_cart
 router.post('/', function (req, res, next) {
   
   const { user_id, item_id, quantity} = req.body;
@@ -79,5 +80,35 @@ router.post('/', function (req, res, next) {
     }
   );
 });
+
+// delete item from user_cart
+router.get('/remove/:id', function(req, res, next) {
+  const itemId = req.params.id;
+
+
+  if (!Number.isInteger(+itemId) || +itemId <= 0) {
+    res.status(400).send('Invalid item ID');
+    return;
+  }
+
+  const query = 'DELETE FROM user_cart WHERE item_id = ?';
+  connection.query(query, [itemId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+
+    if (results.length === 0) {
+      res.status(404).send('Item not found');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
+
 
 module.exports = router;
