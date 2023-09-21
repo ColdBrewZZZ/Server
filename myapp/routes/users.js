@@ -4,6 +4,9 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+
 
 const {connection} = require('../db/config')
 
@@ -23,9 +26,10 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/user', function (req, res, next) {
-  const { id } = req.body;
- 
+router.get('/user', function (req, res, next) {
+  const id = req.cookies.userID;
+  console.log("this is the id", id);
+  console.log('Cookies:', req.cookies);
   connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
