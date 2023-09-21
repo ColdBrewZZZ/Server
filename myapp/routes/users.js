@@ -1,20 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql2'); 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 
+const {connection} = require('../db/config')
+
 router.use(cookieParser());
 
-require('dotenv').config();
-var connection = mysql.createConnection({
-  host: process.env.DB_HOST, 
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
-});
 
 router.get('/', function(req, res, next) {
   connection.query('SELECT * FROM users', (err, results) => {
@@ -65,6 +59,11 @@ router.post('/login', function (req, res, next) {
         
         loggedInUserId = user.id;
         res.json({ success: true });
+  
+        res.cookie("userID", loggedInUserId, {
+          domain: 'localhost'
+        });
+  
       } else {
      
         res.json({ success: false });
