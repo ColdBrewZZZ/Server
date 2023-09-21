@@ -60,13 +60,13 @@ router.post('/login', function (req, res, next) {
 
      
       if (password === user.password) {
-        
+        res.cookie("userID", user.id, {
+          domain: 'localhost'
+        });
         loggedInUserId = user.id;
         res.json({ success: true });
   
-        res.cookie("userID", loggedInUserId, {
-          domain: 'localhost'
-        });
+        
   
       } else {
      
