@@ -19,7 +19,7 @@ var reset_passwordRouter = require('./routes/reset_password');
 var categoriesRouter = require('./routes/categories');
 var insert_addressRouter = require('./routes/insert_address');
 var checkoutRouter = require('./routes/checkout')
-//var order_historyRouter = require('./routes/order_history');
+var order_historyRouter = require('./routes/order_history');
 
 var app = express();
 
@@ -47,7 +47,7 @@ app.use('/reset_password', reset_passwordRouter);
 app.use('/categories', categoriesRouter);
 app.use('/insert_address', insert_addressRouter)
 app.use('/checkout', checkoutRouter);
-//app.use('/order_history', order_historyRouter);
+app.use('/order_history', order_historyRouter);
 
 
 // catch 404 and forward to error handler
