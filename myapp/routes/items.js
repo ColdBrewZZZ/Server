@@ -10,7 +10,7 @@ router.use(cookieParser());
 
 const {connection} = require('../db/config')
 
-router.get('/', function(req, res, next) {
+router.get('/All', function(req, res, next) {
   connection.query('SELECT * FROM items', (err, results) => {
     if (err) {
       console.error(err);
@@ -27,6 +27,33 @@ router.get('/new-items', function(req, res, next) {
     if (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
+router.get('/category:id', function(req, res, next) {
+  const categoryId = req.params.id;
+
+
+  if (!Number.isInteger(+categoryId) || +categoryId <= 0) {
+    res.status(400).send('Invalid category ID');
+    return;
+  }
+
+  const query = 'SELECT * FROM items WHERE category_id = ?';
+  connection.query(query, [categoryId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+
+    if (results.length === 0) {
+      res.status(404).send('Items not found');
       return;
     }
 
