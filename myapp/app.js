@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var ordersRouter = require('./routes/orders');
@@ -16,6 +17,8 @@ var hero_section_imagesRouter = require('./routes/hero_section_images')
 var send_emailRouter = require('./routes/send_email');
 var reset_passwordRouter = require('./routes/reset_password');
 var categoriesRouter = require('./routes/categories');
+var insert_addressRouter = require('./routes/insert_address');
+var checkoutRouter = require('./routes/checkout')
 //var order_historyRouter = require('./routes/order_history');
 
 var app = express();
@@ -42,6 +45,8 @@ app.use('/insert_user', insert_userRouter);
 app.use('/send_email', send_emailRouter);
 app.use('/reset_password', reset_passwordRouter);
 app.use('/categories', categoriesRouter);
+app.use('/insert_address', insert_addressRouter)
+app.use('/checkout', checkoutRouter);
 //app.use('/order_history', order_historyRouter);
 
 

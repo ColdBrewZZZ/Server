@@ -1,33 +1,96 @@
 var express = require('express');
 var router = express.Router();
+var mysql = require('mysql2'); 
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const cookieParser = require('cookie-parser');
+
+router.use(cookieParser());
+
+const {connection} = require('../db/config')
 
 
 router.get('/', function(req, res, next) {
-  res.send('this is the orders');
+  connection.query('SELECT * FROM orders', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    res.json(results);
+  });
 });
 
-// Endpoint to set a cookie
-router.get('/set-cookie', function(req, res, next) {
-  // Set a cookie named "myCookie" with the value "hello"
-  res.cookie('myCookie', 'gogeed');
 
-  // Send a response
-  res.send('Cookie set!');
+router.get('/order_details', function(req, res, next) {
+  connection.query('SELECT * FROM order_details', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    res.json(results);
+  });
 });
 
-// Endpoint to get the cookie
-router.get('/get-cookie', function(req, res, next) {
-  // Retrieve the value of the "myCookie" cookie
-  var cookieValue = req.cookies.myCookie;
+router.post('/', function (req, res, next) {
+  
+  const { user_id, date, order_status, phone, address_id } = req.body;
 
-  // Check if the cookie exists
-  if (cookieValue) {
-    // Display "hello" if the cookie exists
-    res.send('Cookie value: ' + cookieValue);
-  } else {
-    // Display a message if the cookie doesn't exist
-    res.send('Cookie not found');
-  }
+  
+  const insertQuery = `
+    INSERT INTO orders (user_id, date, order_status, phone, address_id)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  
+  connection.query(
+    insertQuery,
+    [user_id, date, order_status, phone, address_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+     
+      res.status(201).json({ message: 'orders row created successfully', insertedId: result.insertId });
+    }
+  );
+});
+
+
+router.post('/order_details', function (req, res, next) {
+  
+  const { order_id, item_id, quantity, price} = req.body;
+
+  
+  const insertOrderDetailsQuery = `
+    INSERT INTO order_details (order_id, item_id, quantity, price)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  
+  connection.query(
+    insertOrderDetailsQuery,
+    [order_id, item_id, quantity, price],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+     
+      res.status(201).json({ message: 'order_details row created successfully', insertedId: result.insertId });
+    }
+  );
 });
 
 module.exports = router;
+
+
